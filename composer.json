@@ -1,6 +1,8 @@
 {
-    "name": "vnpost/postpay-php",
-    "description": "Postpay API PHP client for multiple frameworks including Laravel and ThinkPHP",
+    "name": "vnpost/postpayQR-php",
+    "version": "1.0.0",
+    "type": "library",
+    "description": "Postpay API PHP client for multiple frameworks including Laravel",
     "autoload": {
         "psr-4": {
             "Postpay\\": "src/"
@@ -9,5 +11,8 @@
     "require": {
         "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "Apache-2.0"
 }
