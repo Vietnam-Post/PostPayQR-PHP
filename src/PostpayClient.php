@@ -15,7 +15,6 @@ class PostpayClient
 {
     protected $client;
     protected $baseUrl;
-    protected $keyPath;
     protected $partnerCode;
 
     public function __construct(string $mode, string $apiKeyPath, string $partnerCode)
@@ -24,12 +23,12 @@ class PostpayClient
             ? 'https://api-bdvn.postpay.vn/' 
             : 'https://api-bdvn-dev.postpay.vn/';
         
-        $this->keyPath = $apiKeyPath;
         $this->partnerCode = $partnerCode;
         
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
+            'verify' => $apiKeyPath,
         ]);
     }
 
@@ -109,18 +108,15 @@ class PostpayClient
 
     private function prepareHeaders(array $payload): array
     {
-        $certificate = file_get_contents($this->keyPath);
-        $signature = $this->generateSignature($payload, $certificate);
+        $signature = $this->generateSignature($payload);
 
         return [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $signature,
         ];
     }
 
-    private function generateSignature(array $data, string $certificate): string
+    private function generateSignature(array $data): string
     {
-        openssl_sign(json_encode($data), $signature, $certificate, OPENSSL_ALGO_SHA256);
-        return base64_encode($signature);
+        return '';
     }
 }
