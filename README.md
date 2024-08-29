@@ -14,7 +14,7 @@ Postpay API PHP Client là một thư viện PHP dùng để tích hợp với P
 ## Cài đặt
 
 ```bash
-composer require postpay/php-client
+composer require vnpost/postpay-php
 ```
 
 ## Cấu hình
