@@ -16,19 +16,23 @@ class PostpayClient
     protected $client;
     protected $baseUrl;
     protected $partnerCode;
+    protected $partnerPrivateKeyPath;
+    protected $publicKeyPath;
 
-    public function __construct(string $mode, string $apiKeyPath, string $partnerCode)
+    public function __construct(string $mode, string $partnerCode, string $partnerPrivateKeyPath, string $publicKeyPath)
     {
         $this->baseUrl = $mode === 'prod' 
             ? 'https://api-bdvn.postpay.vn/' 
             : 'https://api-bdvn-dev.postpay.vn/';
         
         $this->partnerCode = $partnerCode;
+        $this->partnerPrivateKeyPath = $partnerPrivateKeyPath;
+        $this->publicKeyPath = $publicKeyPath;
         
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
-            'verify' => $apiKeyPath,
+            'verify' => $this->publicKeyPath,
         ]);
     }
 
@@ -125,6 +129,42 @@ class PostpayClient
 
     private function generateSignature(array $data): string
     {
-        return '';
+        $rawData = $this->partnerCode . '|' . $data['requestId'] . '|' . $this->convertDataToString($data['data']);
+        
+        $privateKey = file_get_contents($this->partnerPrivateKeyPath);
+        $privateKeyResource = openssl_pkey_get_private($privateKey);
+        
+        if (!$privateKeyResource) {
+            throw new \Exception('Invalid private key');
+        }
+
+        $signature = '';
+        if (!openssl_sign($rawData, $signature, $privateKeyResource, OPENSSL_ALGO_SHA256)) {
+            throw new \Exception('Failed to generate signature');
+        }
+
+        return base64_encode($signature);
+    }
+
+    public function verifySignature(array $response): bool
+    {
+        $rawData = $response['code'] . '|' . $response['message'] . '|' . $this->convertDataToString($response['body']);
+        
+        $publicKey = file_get_contents($this->publicKeyPath);
+        $publicKeyResource = openssl_pkey_get_public($publicKey);
+        
+        if (!$publicKeyResource) {
+            throw new \Exception('Invalid public key');
+        }
+
+        $signature = base64_decode($response['signature']);
+        $verifyResult = openssl_verify($rawData, $signature, $publicKeyResource, OPENSSL_ALGO_SHA256);
+        
+        return $verifyResult === 1;
+    }
+
+    private function convertDataToString(array $data): string
+    {
+        return implode('|',array_values($data));
     }
 }
