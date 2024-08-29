@@ -103,19 +103,12 @@ class PostpayClient
 
     private function preparePayload(array $data): array
     {
-        $requestId = $data['requestId'] ?? uniqid();
-        unset($data['requestId']);
-        
-        // $rawData = $this->partnerCode . '|' . $requestId . '|' . $data;
-        // $signature = md5($rawData);
-        $signature = md5(uniqid());
+        $signature = $this->generateSignature($data);
 
         return [
             'partnerCode' => $this->partnerCode,
-            'requestId' => $requestId,
             'signature' => $signature,
-            'data'      => $data,
-        ];
+        ] + $data;
     }
 
     private function prepareHeaders(array $payload): array
@@ -129,7 +122,9 @@ class PostpayClient
 
     private function generateSignature(array $data): string
     {
-        $rawData = $this->partnerCode . '|' . $data['requestId'] . '|' . $this->convertDataToString($data['data']);
+        $requestId = $data['requestId'];
+        unset($data['requestId']);
+        $rawData = $this->partnerCode . '|' . $requestId . '|' . $this->convertDataToString($data);
         
         $privateKey = file_get_contents($this->partnerPrivateKeyPath);
         $privateKeyResource = openssl_pkey_get_private($privateKey);
