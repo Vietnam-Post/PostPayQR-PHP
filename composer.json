@@ -1,0 +1,13 @@
+{
+    "name": "vnpost/postpay-php",
+    "description": "Postpay API PHP client for multiple frameworks including Laravel and ThinkPHP",
+    "autoload": {
+        "psr-4": {
+            "Postpay\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
