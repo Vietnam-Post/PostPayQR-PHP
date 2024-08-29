@@ -110,7 +110,7 @@ class PostpayClient
             'partnerCode' => $this->partnerCode,
             'requestId' => $requestId,
             'signature' => $signature,
-            'data' => $data,
+            'data'      => $data,
         ];
     }
 

@@ -12,7 +12,5 @@
         "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "license": "Apache-2.0"
 }
