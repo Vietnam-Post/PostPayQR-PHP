@@ -1,6 +1,6 @@
 {
     "name": "vnpost/postpay-qr-php",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "type": "library",
     "description": "Postpay API PHP client for multiple frameworks including Laravel",
     "autoload": {

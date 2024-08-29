@@ -99,9 +99,17 @@ class PostpayClient
 
     private function preparePayload(array $data): array
     {
+        $requestId = $data['requestId'] ?? uniqid();
+        unset($data['requestId']);
+        
+        $rawData = $this->partnerCode . '|' . $requestId . '|' . $data;
+
+        $signature = md5($rawData);
+        
         return [
             'partnerCode' => $this->partnerCode,
-            'requestId' => uniqid(),
+            'requestId' => $requestId,
+            'signature' => $signature,
             'data' => $data,
         ];
     }
