@@ -102,10 +102,10 @@ class PostpayClient
         $requestId = $data['requestId'] ?? uniqid();
         unset($data['requestId']);
         
-        $rawData = $this->partnerCode . '|' . $requestId . '|' . $data;
+        // $rawData = $this->partnerCode . '|' . $requestId . '|' . $data;
+        // $signature = md5($rawData);
+        $signature = md5(uniqid());
 
-        $signature = md5($rawData);
-        
         return [
             'partnerCode' => $this->partnerCode,
             'requestId' => $requestId,
