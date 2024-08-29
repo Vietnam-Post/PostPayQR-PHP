@@ -1,6 +1,6 @@
 # Postpay API PHP Client
 
-Postpay API PHP Client là một thư viện PHP dùng để tích hợp với Postpay API, cho phép bạn quản lý tài khoản chuyên thu và thực hiện các thao tác liên quan như tạo tài khoản, đóng tài khoản, truy vấn giao dịch, và xử lý callback. Thư viện này có thể sử dụng với nhiều framework PHP khác nhau, bao gồm Laravel và ThinkPHP.
+Postpay API PHP Client là một thư viện PHP dùng để tích hợp với Postpay API, cho phép bạn quản lý tài khoản chuyên thu và thực hiện các thao tác liên quan như tạo tài khoản, đóng tài khoản, truy vấn giao dịch, và xử lý callback. Thư viện này có thể sử dụng với nhiều framework PHP khác nhau, bao gồm Laravel và này nọ.
 
 ## Tính năng
 
@@ -40,7 +40,7 @@ $postpay = new PostpayClient(
 $response = $postpay->createAccount($request->all());
 ```
 
-### ThinkPHP hoặc các framework php khác
+### Framework php khác
 ```bash
 [POSTPAY]
 MODE=dev # hoặc prod
