@@ -26,6 +26,7 @@ Nếu bạn sử dụng Laravel, bạn có thể thêm các biến cấu hình v
 POSTPAY_MODE=dev # hoặc prod
 POSTPAY_API_KEY_PATH=/path/to/key.cer
 POSTPAY_PARTNER_CODE=your_partner_code
+POSTPAY_PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
 ```
 Sau đó, trong mã của bạn, khởi tạo client như sau:
 ```bash
@@ -33,8 +34,9 @@ use Postpay\PostpayClient;
 
 $postpay = new PostpayClient(
     env('POSTPAY_MODE', 'dev'),
+    env('POSTPAY_PARTNER_CODE'),
     env('POSTPAY_API_KEY_PATH'),
-    env('POSTPAY_PARTNER_CODE')
+    env('POSTPAY_PARTNER_PRIVATE_KEY_PATH')
 );
 
 $response = $postpay->createAccount($request->all());
@@ -46,6 +48,7 @@ $response = $postpay->createAccount($request->all());
 MODE=dev # hoặc prod
 API_KEY_PATH=/path/to/key.cer
 PARTNER_CODE=your_partner_code
+PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
 ```
 Sau đó, trong mã của bạn, khởi tạo client như sau:
 ```bash
@@ -59,8 +62,9 @@ class PostpayController extends Controller
     {
         $this->postpayClient = new PostpayClient(
             config('postpay.mode', 'dev'),
+            config('postpay.partner_code'),
             config('postpay.api_key_path'),
-            config('postpay.partner_code')
+            config('postpay.partner_private_key_path')
         );
     }
 

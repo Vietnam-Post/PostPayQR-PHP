@@ -19,7 +19,7 @@ class PostpayClient
     protected $partnerPrivateKeyPath;
     protected $publicKeyPath;
 
-    public function __construct(string $mode, string $partnerCode, string $partnerPrivateKeyPath, string $publicKeyPath)
+    public function __construct(string $mode, string $partnerCode, string $publicKeyPath, string $partnerPrivateKeyPath)
     {
         $this->baseUrl = $mode === 'prod' 
             ? 'https://api-bdvn.postpay.vn/' 
