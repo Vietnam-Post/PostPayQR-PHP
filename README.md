@@ -27,6 +27,8 @@ POSTPAY_MODE=dev # hoặc prod
 POSTPAY_API_KEY_PATH=/path/to/key.cer
 POSTPAY_PARTNER_CODE=your_partner_code
 POSTPAY_PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
+```
+
 ### Framework php khác
 ```bash
 [POSTPAY]
@@ -35,7 +37,9 @@ API_KEY_PATH=/path/to/key.cer
 PARTNER_CODE=your_partner_code
 PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
 ```
+
 Sau đó, trong mã của bạn, khởi tạo client như sau (dùng chung cả Laravel và Framework khác):
+
 ```bash
 use Postpay\PostpayClient;
 
