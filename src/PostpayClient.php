@@ -27,8 +27,8 @@ class PostpayClient
             : 'https://api-bdvn-dev.postpay.vn/';
         
         $this->partnerCode = env('POSTPAY_PARTNER_CODE', env('postpay.partner_code'));
-        $this->partnerPrivateKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
-        $this->publicKeyPath = env('POSTPAY_PARTNER_PRIVATE_KEY_PATH', env('postpay.partner_private_key_path'));
+        $this->publicKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
+        $this->partnerPrivateKeyPath = env('POSTPAY_PARTNER_PRIVATE_KEY_PATH', env('postpay.partner_private_key_path'));
 
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
