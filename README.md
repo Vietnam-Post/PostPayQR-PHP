@@ -27,21 +27,6 @@ POSTPAY_MODE=dev # hoặc prod
 POSTPAY_API_KEY_PATH=/path/to/key.cer
 POSTPAY_PARTNER_CODE=your_partner_code
 POSTPAY_PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
-```
-Sau đó, trong mã của bạn, khởi tạo client như sau:
-```bash
-use Postpay\PostpayClient;
-
-$postpay = new PostpayClient(
-    env('POSTPAY_MODE', 'dev'),
-    env('POSTPAY_PARTNER_CODE'),
-    env('POSTPAY_API_KEY_PATH'),
-    env('POSTPAY_PARTNER_PRIVATE_KEY_PATH')
-);
-
-$response = $postpay->createAccount($request->all());
-```
-
 ### Framework php khác
 ```bash
 [POSTPAY]
@@ -50,28 +35,16 @@ API_KEY_PATH=/path/to/key.cer
 PARTNER_CODE=your_partner_code
 PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
 ```
-Sau đó, trong mã của bạn, khởi tạo client như sau:
+Sau đó, trong mã của bạn, khởi tạo client như sau (dùng chung cả Laravel và Framework khác):
 ```bash
 use Postpay\PostpayClient;
 
 class PostpayController extends Controller
 {
-    protected $postpayClient;
-
-    public function __construct()
+    public function createAccount(PostpayClient $postpayClient)
     {
-        $this->postpayClient = new PostpayClient(
-            config('postpay.mode', 'dev'),
-            config('postpay.partner_code'),
-            config('postpay.api_key_path'),
-            config('postpay.partner_private_key_path')
-        );
-    }
-
-    public function createAccount()
-    {
-        $data = input('post.');
-        $response = $this->postpayClient->createAccount($data);
+        $data = input('post.'); // Thay chỗ này phù hợp với từng Framework
+        $response = $postpayClient->createAccount($data);
 
         if ($response->getErrorCode()) {
             return json(['error' => $response->getErrorMessage()], 400);

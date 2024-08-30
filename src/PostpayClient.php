@@ -19,16 +19,17 @@ class PostpayClient
     protected $partnerPrivateKeyPath;
     protected $publicKeyPath;
 
-    public function __construct(string $mode, string $partnerCode, string $publicKeyPath, string $partnerPrivateKeyPath)
+    public function __construct()
     {
+        $mode = env('POSTPAY_MODE', env('postpay.mode', 'dev'));
         $this->baseUrl = $mode === 'prod' 
             ? 'https://api-bdvn.postpay.vn/' 
             : 'https://api-bdvn-dev.postpay.vn/';
         
-        $this->partnerCode = $partnerCode;
-        $this->partnerPrivateKeyPath = $partnerPrivateKeyPath;
-        $this->publicKeyPath = $publicKeyPath;
-        
+        $this->partnerCode = env('POSTPAY_PARTNER_CODE', env('postpay.partner_code'));
+        $this->partnerPrivateKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
+        $this->publicKeyPath = env('POSTPAY_PARTNER_PRIVATE_KEY_PATH', env('postpay.partner_private_key_path'));
+
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
