@@ -11,11 +11,11 @@ class BaseResponse
     protected $errorCodes;
     protected $postpayClient;
     
-    public function __construct($response, PostpayClient $postpayClient)
+    public function __construct($response)
     {
         $this->response = json_decode($response->getBody()->getContents(), true);
         $this->errorCodes = ErrorCodes::getErrorMessages();
-        $this->postpayClient = $postpayClient;
+        $this->postpayClient = new PostpayClient;
 
         $this->verifySignature();
     }
