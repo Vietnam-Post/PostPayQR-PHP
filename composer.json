@@ -1,6 +1,6 @@
 {
     "name": "vnpost/postpay-php",
-    "version": "1.0.0.8",
+    "version": "1.0.0.0",
     "type": "library",
     "description": "Postpay API PHP client for multiple frameworks including Laravel",
     "autoload": {
