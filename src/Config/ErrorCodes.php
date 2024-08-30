@@ -1,9 +1,22 @@
 <?php
+/*****************************************************************************
+ * @Author                : KienNguyen<letvn.com@gmail.com>                  *
+ * @CreatedDate           : 2024-08-30 16:43:22                              *
+ * @LastEditors           : KienNguyen<letvn.com@gmail.com>                  *
+ * @LastEditDate          : 2024-08-30 16:43:41                              *
+ * @FilePath              : packages/Postpay/src/config/ErrorCodes.php       *
+ * @CopyRight             : VietNamPost (vietnampost.vn)                     *
+ ****************************************************************************/
 
 namespace Postpay\Config;
 
 class ErrorCodes
-{
+{    
+    /**
+     * getErrorMessages
+     *
+     * @return array
+     */
     public static function getErrorMessages(): array
     {
         return [

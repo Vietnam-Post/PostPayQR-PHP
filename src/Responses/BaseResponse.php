@@ -1,4 +1,12 @@
 <?php
+/*****************************************************************************
+ * @Author                : KienNguyen<kiennt@vnpost.vn>                     *
+ * @CreatedDate           : 2024-08-30 16:47:26                              *
+ * @LastEditors           : KienNguyen<kiennt@vnpost.vn>                     *
+ * @LastEditDate          : 2024-08-30 16:51:54                              *
+ * @FilePath              : BaseResponse.php                                 *
+ * @CopyRight             : VietNamPost (vietnampost.vn)                     *
+ ****************************************************************************/
 
 namespace Postpay\Responses;
 
@@ -16,8 +24,6 @@ class BaseResponse
         $this->response = json_decode($response->getBody()->getContents(), true);
         $this->errorCodes = ErrorCodes::getErrorMessages();
         $this->postpayClient = new PostpayClient;
-
-        $this->verifySignature();
     }
 
     public function getData(): array
