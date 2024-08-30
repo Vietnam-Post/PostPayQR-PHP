@@ -3,7 +3,7 @@
  * @Author                : KienNguyen<kiennt@vnpost.vn>                     *
  * @CreatedDate           : 2024-08-30 16:49:32                              *
  * @LastEditors           : KienNguyen<kiennt@vnpost.vn>                     *
- * @LastEditDate          : 2024-08-30 16:49:39                              *
+ * @LastEditDate          : 2024-08-30 17:24:26                              *
  * @FilePath              : PostpayClient.php                                *
  * @CopyRight             : VietNamPost (vietnampost.vn)                     *
  ****************************************************************************/
@@ -110,29 +110,34 @@ class PostpayClient
         return new CallbackResponse($response);
     }
 
+    private function signatureData($data) {
+        return [
+            $data['accNameSuffix'] ?? '',
+            $data['accNoSuffix'] ?? '',
+            $data['accType'] ?? '',
+            $data['fixedAmount'] ?? '',
+            $data['partnerAccNo'] ?? '',
+        ];
+    }
+    
     private function preparePayload(array $data): array
     {
-        $signature = $this->generateSignature($data);
-
-        return [
+        $signature = $this->generateSignature($this->signatureData($data), $data['requestId'] ?? '');
+        return array_merge([
             'partnerCode' => $this->partnerCode,
             'signature' => $signature,
-        ] + $data;
+        ], $data);
     }
 
     private function prepareHeaders(array $payload): array
     {
-        $signature = $this->generateSignature($payload);
-
         return [
             'Content-Type' => 'application/json',
         ];
     }
 
-    private function generateSignature(array $data): string
+    private function generateSignature(array $data, $requestId = ""): string
     {
-        $requestId = $data['requestId'];
-        unset($data['requestId']);
         $rawData = $this->partnerCode . '|' . $requestId . '|' . $this->convertDataToString($data);
         
         $privateKey = file_get_contents($this->partnerPrivateKeyPath);
