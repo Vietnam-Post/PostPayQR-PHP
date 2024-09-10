@@ -3,7 +3,7 @@
  * @Author                : KienNguyen<kiennt@vnpost.vn>                     *
  * @CreatedDate           : 2024-08-30 16:49:32                              *
  * @LastEditors           : KienNguyen<kiennt@vnpost.vn>                     *
- * @LastEditDate          : 2024-09-10 10:18:23                              *
+ * @LastEditDate          : 2024-09-10 10:20:56                              *
  * @FilePath              : PostpayClient.php                                *
  * @CopyRight             : VietNamPost (vietnampost.vn)                     *
  ****************************************************************************/
@@ -145,9 +145,10 @@ class PostpayClient
      * signatureData
      *
      * @param  mixed $data
-     * @return void
+     * @return array
      */
-    private function signatureData($data) {
+    private function signatureData($data): array
+    {
         return [
             $data['accNameSuffix'] ?? '',
             $data['accNoSuffix'] ?? '',
