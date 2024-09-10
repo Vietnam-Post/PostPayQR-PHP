@@ -3,7 +3,7 @@
  * @Author                : KienNguyen<kiennt@vnpost.vn>                     *
  * @CreatedDate           : 2024-08-30 16:49:32                              *
  * @LastEditors           : KienNguyen<kiennt@vnpost.vn>                     *
- * @LastEditDate          : 2024-08-30 17:24:26                              *
+ * @LastEditDate          : 2024-09-10 10:13:05                              *
  * @FilePath              : PostpayClient.php                                *
  * @CopyRight             : VietNamPost (vietnampost.vn)                     *
  ****************************************************************************/
@@ -30,10 +30,10 @@ class PostpayClient
     public function __construct()
     {
         $mode = env('POSTPAY_MODE', env('postpay.mode', 'dev'));
-        $this->baseUrl = $mode === 'prod' 
-            ? 'https://api-bdvn.postpay.vn/' 
+        $this->baseUrl = $mode === 'prod'
+            ? 'https://api-bdvn.postpay.vn/'
             : 'https://api-bdvn-dev.postpay.vn/';
-        
+
         $this->partnerCode = env('POSTPAY_PARTNER_CODE', env('postpay.partner_code'));
         $this->publicKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
         $this->partnerPrivateKeyPath = env('POSTPAY_PARTNER_PRIVATE_KEY_PATH', env('postpay.partner_private_key_path'));
@@ -41,7 +41,7 @@ class PostpayClient
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
-            'verify' => $this->publicKeyPath,
+            'verify' => false,
         ]);
     }
 
@@ -51,8 +51,9 @@ class PostpayClient
         $payload = $this->preparePayload($data);
 
         $response = $this->client->post($url, [
-            'headers' => $this->prepareHeaders($payload),
-            'json' => $payload,
+            'headers'   => $this->prepareHeaders($payload),
+            'json'      => $payload,
+            'ssl_key'   => $this->publicKeyPath,
         ]);
 
         return new CreateAccountResponse($response);
