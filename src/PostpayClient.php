@@ -3,7 +3,7 @@
  * @Author                : KienNguyen<kiennt@vnpost.vn>                     *
  * @CreatedDate           : 2024-08-30 16:49:32                              *
  * @LastEditors           : KienNguyen<kiennt@vnpost.vn>                     *
- * @LastEditDate          : 2024-09-10 10:13:05                              *
+ * @LastEditDate          : 2024-09-10 10:18:23                              *
  * @FilePath              : PostpayClient.php                                *
  * @CopyRight             : VietNamPost (vietnampost.vn)                     *
  ****************************************************************************/
@@ -44,7 +44,13 @@ class PostpayClient
             'verify' => false,
         ]);
     }
-
+    
+    /**
+     * createAccount
+     *
+     * @param  mixed $data
+     * @return CreateAccountResponse
+     */
     public function createAccount(array $data): CreateAccountResponse
     {
         $url = 'cob-partner/account/v1/create';
@@ -58,7 +64,13 @@ class PostpayClient
 
         return new CreateAccountResponse($response);
     }
-
+    
+    /**
+     * closeAccount
+     *
+     * @param  mixed $accountNumber
+     * @return CloseAccountResponse
+     */
     public function closeAccount(string $accountNumber): CloseAccountResponse
     {
         $url = 'cob-partner/account/v1/close';
@@ -71,7 +83,13 @@ class PostpayClient
 
         return new CloseAccountResponse($response);
     }
-
+    
+    /**
+     * detailAccount
+     *
+     * @param  mixed $accountNumber
+     * @return DetailAccountResponse
+     */
     public function detailAccount(string $accountNumber): DetailAccountResponse
     {
         $url = 'cob-partner/account/v1/detail';
@@ -84,7 +102,13 @@ class PostpayClient
 
         return new DetailAccountResponse($response);
     }
-
+    
+    /**
+     * searchTransaction
+     *
+     * @param  mixed $data
+     * @return SearchTransactionResponse
+     */
     public function searchTransaction(array $data): SearchTransactionResponse
     {
         $url = 'cob-partner/account/v1/search-trans';
@@ -97,7 +121,13 @@ class PostpayClient
 
         return new SearchTransactionResponse($response);
     }
-
+    
+    /**
+     * handleCallback
+     *
+     * @param  mixed $data
+     * @return CallbackResponse
+     */
     public function handleCallback(array $data): CallbackResponse
     {
         $url = 'cob-partner/account/v1/callback';
@@ -110,7 +140,13 @@ class PostpayClient
 
         return new CallbackResponse($response);
     }
-
+    
+    /**
+     * signatureData
+     *
+     * @param  mixed $data
+     * @return void
+     */
     private function signatureData($data) {
         return [
             $data['accNameSuffix'] ?? '',
@@ -120,7 +156,13 @@ class PostpayClient
             $data['partnerAccNo'] ?? '',
         ];
     }
-    
+        
+    /**
+     * preparePayload
+     *
+     * @param  mixed $data
+     * @return array
+     */
     private function preparePayload(array $data): array
     {
         $signature = $this->generateSignature($this->signatureData($data), $data['requestId'] ?? '');
@@ -129,14 +171,27 @@ class PostpayClient
             'signature' => $signature,
         ], $data);
     }
-
+    
+    /**
+     * prepareHeaders
+     *
+     * @param  mixed $payload
+     * @return array
+     */
     private function prepareHeaders(array $payload): array
     {
         return [
             'Content-Type' => 'application/json',
         ];
     }
-
+    
+    /**
+     * generateSignature
+     *
+     * @param  mixed $data
+     * @param  mixed $requestId
+     * @return string
+     */
     private function generateSignature(array $data, $requestId = ""): string
     {
         $rawData = $this->partnerCode . '|' . $requestId . '|' . $this->convertDataToString($data);
@@ -155,7 +210,13 @@ class PostpayClient
 
         return base64_encode($signature);
     }
-
+    
+    /**
+     * verifySignature
+     *
+     * @param  mixed $response
+     * @return bool
+     */
     public function verifySignature(array $response): bool
     {
         $rawData = $response['code'] . '|' . $response['message'] . '|' . $this->convertDataToString($response['body']);
@@ -172,7 +233,13 @@ class PostpayClient
         
         return $verifyResult === 1;
     }
-
+    
+    /**
+     * convertDataToString
+     *
+     * @param  mixed $data
+     * @return string
+     */
     private function convertDataToString(array $data): string
     {
         return implode('|',array_values($data));
