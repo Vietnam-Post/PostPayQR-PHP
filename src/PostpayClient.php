@@ -29,10 +29,7 @@ class PostpayClient
 
     public function __construct()
     {
-        $mode = env('POSTPAY_MODE', env('postpay.mode', 'dev'));
-        $this->baseUrl = $mode === 'prod'
-            ? 'https://api-bdvn.postpay.vn/'
-            : 'https://api-bdvn-dev.postpay.vn/';
+        $this->baseUrl = env('POSTPAY_API_URL', env('postpay.api_url', 'https://api-bdvn-dev.postpay.vn/'));
 
         $this->partnerCode = env('POSTPAY_PARTNER_CODE', env('postpay.partner_code'));
         $this->publicKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
@@ -42,6 +39,7 @@ class PostpayClient
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
             'verify' => false,
+            'proxy' => env('POSTPAY_PROXY_URL', env('postpay.proxy_url')),
         ]);
     }
     

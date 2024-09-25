@@ -23,19 +23,21 @@ Trước khi sử dụng, bạn cần cấu hình một số thông tin cần th
 ### Laravel
 Nếu bạn sử dụng Laravel, bạn có thể thêm các biến cấu hình vào file .env:
 ```bash
-POSTPAY_MODE=dev # hoặc prod
+POSTPAY_API_URL=postpay_api_url # https://postpay.vn/url
 POSTPAY_API_KEY_PATH=/path/to/key.cer
 POSTPAY_PARTNER_CODE=your_partner_code
 POSTPAY_PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
+POSTPAY_PROXY_URL= # optional
 ```
 
 ### Framework php khác
 ```bash
 [POSTPAY]
-MODE=dev # hoặc prod
+API_URL=postpay_api_url # https://postpay.vn/url
 API_KEY_PATH=/path/to/key.cer
 PARTNER_CODE=your_partner_code
 PARTNER_PRIVATE_KEY_PATH=/path/to/partner_private_key_path.pem
+PROXY_URL= # optional
 ```
 
 Sau đó, trong mã của bạn, khởi tạo client như sau (dùng chung cả Laravel và Framework khác):
