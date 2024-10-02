@@ -35,6 +35,7 @@ class PostpayClient
         $this->publicKeyPath = env('POSTPAY_API_KEY_PATH', env('postpay.api_key_path'));
         $this->partnerPrivateKeyPath = env('POSTPAY_PARTNER_PRIVATE_KEY_PATH', env('postpay.partner_private_key_path'));
 
+        
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 5.0,
@@ -218,7 +219,12 @@ class PostpayClient
      */
     public function verifySignature(array $response): bool
     {
+        if (!file_exists($this->publicKeyPath)) {
+            throw new \Exception("Public key file does not exist: " . $this->publicKeyPath);
+        }
+
         $rawData = $response['code'] . '|' . $response['message'] . '|' . $this->convertDataToString($response['body']);
+        
         
         $publicKey = file_get_contents($this->publicKeyPath);
         $publicKeyResource = openssl_pkey_get_public($publicKey);
@@ -242,5 +248,86 @@ class PostpayClient
     private function convertDataToString(array $data): string
     {
         return implode('|',array_values($data));
+    }
+
+    /**
+     * handleWebhook
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function handleWebhook(): array
+    {
+        // Lấy dữ liệu đầu vào từ các framework khác nhau
+        if (class_exists('Illuminate\Http\Request')) {
+            // Laravel
+            $data = request()->all();
+        } elseif (class_exists('think\Request')) {
+            // ThinkPHP
+            $data = input('post.');
+        } else {
+            // PHP thuần
+            $data = $_POST;
+        }
+
+        // Kiểm tra xem các trường cần thiết có tồn tại không
+        $requiredFields = [
+            'requestId', 'signature', 'transId', 'accNo', 'ccy', 
+            'amount', 'transDate', 'relatedAccNo', 'relatedAccName', 
+            'fromAccNo', 'fromAccName', 'transNote', 'fromBankCode', 'fromBankName'
+        ];
+        
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                throw new \Exception("Missing required field: $field");
+            }
+        }
+
+        // Kiểm tra xem partnerCode có tồn tại không
+        if (!isset($data['partnerCode']) || $data['partnerCode'] !== $this->partnerCode) {
+            throw new \Exception("Invalid partner code");
+        }
+
+        // Tạo chuỗi dữ liệu để tạo chữ ký
+        $rawData = implode('|', [
+            $data['partnerCode'] ?? '',
+            $data['requestId'] ?? '',
+            $data['transId'] ?? '',
+            $data['accNo'] ?? '',
+            $data['ccy'] ?? '',
+            $data['amount'] ?? '',
+            $data['transDate'] ?? '',
+            $data['relatedAccNo'] ?? '',
+            $data['relatedAccName'] ?? '',
+            $data['transNote'] ?? '',
+            $data['fromAccNo'] ?? '',
+            $data['fromAccName'] ?? '',
+            $data['fromBankCode'] ?? '',
+            $data['fromBankName'] ?? '',
+        ]);
+
+        // Kiểm tra sự tồn tại của file khóa
+        if (!file_exists($this->partnerPrivateKeyPath)) {
+            throw new \Exception("Private key file does not exist: " . $this->partnerPrivateKeyPath);
+        }
+
+        // Giải mã chữ ký từ body
+        $signature = base64_decode($data['signature']);
+
+        // Kiểm tra chữ ký
+        $publicKey = file_get_contents($this->partnerPrivateKeyPath);
+        $privateKeyResource = openssl_pkey_get_private($publicKey);
+
+        if (!$privateKeyResource) {
+            throw new \Exception('Invalid private key');
+        }
+
+        $verifyResult = openssl_verify($rawData, $signature, $privateKeyResource, OPENSSL_ALGO_SHA256);
+
+        if(!$verifyResult) {
+            throw new \Exception("Invalid Signature");
+        }
+        
+        return $data;
     }
 }
