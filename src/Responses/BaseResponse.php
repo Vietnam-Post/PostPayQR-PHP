@@ -54,7 +54,7 @@ class BaseResponse
     public function getErrorMessage(): ?string
     {
         $code = $this->getErrorCode();
-        return $this->errorCodes[$code] ?? 'Unknown error';
+        return $code . ': ' . ($this->errorCodes[$code] ?? 'Không thể xác định lỗi.');
     }
     
     /**
